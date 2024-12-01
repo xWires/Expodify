@@ -52,7 +52,7 @@ public partial class MainWindow : Window
                 .ShowAsync();
             return;
         }
-        Log($"Found iPod_Control at {CleanPath(_iPodControl.Path.ToString(), "file://")}");
+        Log($"Found iPod_Control at {CleanPath(_iPodControl.Path.ToString())}");
         
         var controlContents = _iPodControl.GetItemsAsync();
         await foreach (var c in controlContents)
@@ -72,7 +72,7 @@ public partial class MainWindow : Window
                 .ShowAsync();
             return;
         }
-        Log($"Found Music at {CleanPath(_musicFolder.Path.ToString(), "file://")}");
+        Log($"Found Music at {CleanPath(_musicFolder.Path.ToString())}");
     }
 
     private async void SelectOutputFolder(object source, RoutedEventArgs args)
@@ -87,7 +87,7 @@ public partial class MainWindow : Window
         
         _baseOutputFolder = folder[0];
         
-        Log($"Set output folder to {CleanPath(_baseOutputFolder.Path.ToString(), "file://")}");
+        Log($"Set output folder to {CleanPath(_baseOutputFolder.Path.ToString())}");
     }
 
     private async void Extract(object source, RoutedEventArgs args)
@@ -224,7 +224,7 @@ public partial class MainWindow : Window
             await foreach (var song in folder.GetItemsAsync())
             {
                 if (song is not IStorageFile) continue;
-                ExtractSong(CleanPath(song.Path.ToString(), "file://"));
+                ExtractSong(CleanPath(song.Path.ToString()));
             }
         }
         
@@ -244,7 +244,7 @@ public partial class MainWindow : Window
             songName = "Unknown_" + Path.GetRandomFileName().Substring(0, 8);
         }
 
-        var newPath = CleanPath(_outputFolder!, "file://") + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
+        var newPath = CleanPath(_outputFolder!) + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
         if (File.Exists(newPath + Path.GetExtension(path)))
         {
             Log($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
@@ -257,9 +257,10 @@ public partial class MainWindow : Window
         Log($"Extracted \"{songName}\" to {newPath}");
     }
 
-    private string CleanPath(string path, string prefix)
+    private string CleanPath(string path)
     {
-       return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
+        var prefix = Environment.OSVersion.Platform == PlatformID.Win32NT ? "file:///" : "file://";
+        return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
     }
 
     private string ReplaceInvalidCharacters(string path)
