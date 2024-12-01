@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -13,7 +11,8 @@ namespace Expodify.Views;
 public partial class MainWindow : Window
 {
     private IStorageFolder? _iPodFolder;
-    private IStorageFolder? _outputFolder;
+    private IStorageFolder? _baseOutputFolder;
+    private string? _outputFolder;
     private IStorageFolder? _iPodControl;
     private IStorageFolder? _musicFolder;
     
@@ -38,10 +37,8 @@ public partial class MainWindow : Window
         var contents = _iPodFolder.GetItemsAsync();
         await foreach (var c in contents)
         {
-            if (c is IStorageFolder storageFolder)
-            {
-                if (storageFolder.Name == "iPod_Control") { _iPodControl = storageFolder; break; }
-            }
+            if (c is not IStorageFolder storageFolder) continue;
+            if (storageFolder.Name == "iPod_Control") { _iPodControl = storageFolder; break; }
         }
 
         if (_iPodControl == null)
@@ -55,15 +52,13 @@ public partial class MainWindow : Window
                 .ShowAsync();
             return;
         }
-        Log($"Found iPod_Control at {_iPodControl.Path.AbsolutePath}");
+        Log($"Found iPod_Control at {CleanPath(_iPodControl.Path.ToString(), "file://")}");
         
         var controlContents = _iPodControl.GetItemsAsync();
         await foreach (var c in controlContents)
         {
-            if (c is IStorageFolder storageFolder)
-            {
-                if (storageFolder.Name == "Music") { _musicFolder = storageFolder; break; }
-            }
+            if (c is not IStorageFolder storageFolder) continue;
+            if (storageFolder.Name == "Music") { _musicFolder = storageFolder; break; }
         }
         
         if (_musicFolder == null)
@@ -77,7 +72,7 @@ public partial class MainWindow : Window
                 .ShowAsync();
             return;
         }
-        Log($"Found Music at {_musicFolder.Path.AbsolutePath}");
+        Log($"Found Music at {CleanPath(_musicFolder.Path.ToString(), "file://")}");
     }
 
     private async void SelectOutputFolder(object source, RoutedEventArgs args)
@@ -90,9 +85,9 @@ public partial class MainWindow : Window
         
         if (folder.Count < 1) return;
         
-        _outputFolder = folder[0];
+        _baseOutputFolder = folder[0];
         
-        Log($"Set output folder to {_outputFolder.Path.AbsolutePath}");
+        Log($"Set output folder to {CleanPath(_baseOutputFolder.Path.ToString(), "file://")}");
     }
 
     private async void Extract(object source, RoutedEventArgs args)
@@ -108,7 +103,7 @@ public partial class MainWindow : Window
             return;
         }
         
-        if (_outputFolder == null)
+        if (_baseOutputFolder == null)
         {
             await MessageBoxManager.GetMessageBoxStandard(
                     "Output folder not selected",
@@ -127,9 +122,9 @@ public partial class MainWindow : Window
 
         try
         {
-            var destinationPath = _outputFolder.Path.AbsolutePath + "Expodify-" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            var destinationFolder = Directory.CreateDirectory(destinationPath);
-            Log($"Created output folder at {destinationPath}");
+            _outputFolder = _baseOutputFolder.Path.AbsolutePath + "Expodify-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            var destinationFolder = Directory.CreateDirectory(_outputFolder);
+            Log($"Created output folder at {_outputFolder}");
         }
         catch (PathTooLongException)
         {
@@ -219,17 +214,67 @@ public partial class MainWindow : Window
             Reset();
             return;
         }
+
+        // Loop through each of the "F" folders (e.g. F00, F01, F02, etc.)
+        await foreach (var item in _musicFolder!.GetItemsAsync())
+        {
+            if (item is not IStorageFolder folder) continue;
+            Log($"Looking for music at {folder.Path.AbsolutePath}");
+
+            await foreach (var song in folder.GetItemsAsync())
+            {
+                if (song is not IStorageFile) continue;
+                ExtractSong(CleanPath(song.Path.ToString(), "file://"));
+            }
+        }
+        
+        Reset();
+    }
+
+    private void ExtractSong(string path)
+    {
+        var file = TagLib.File.Create(path);
+        var songName = file.Tag.Title;
+        Log($"Extracting \"{songName}\"");
+
+        if (songName == null)
+        {
+            Log("WARNING: Could not determine song title, it will be given a random name instead");
+            songName = "Unknown_" + Path.GetRandomFileName().Substring(0, 8);
+        }
+
+        var newPath = CleanPath(_outputFolder!, "file://") + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
+        if (File.Exists(newPath))
+        {
+            Log($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
+            newPath += "_" + Path.GetRandomFileName().Substring(0, 8);
+        }
+        
+        File.Copy(path, newPath, false);
+        Log($"Extracted \"{songName}\" to {newPath}");
+    }
+
+    private string CleanPath(string path, string prefix)
+    {
+       return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
+    }
+
+    private string ReplaceInvalidCharacters(string path)
+    {
+        return string.Join("_", path.Split(Path.GetInvalidFileNameChars()));
     }
 
     private void Reset()
     {
         _iPodFolder = null;
+        _baseOutputFolder = null;
         _outputFolder = null;
         _iPodControl = null;
         _musicFolder = null;
         
         openIPodButton.IsEnabled = true;
         selectOutputFolderButton.IsEnabled = true;
+        extractButton.IsEnabled = true;
     }
 
     private void Log(string message)
