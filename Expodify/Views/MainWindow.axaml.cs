@@ -228,6 +228,7 @@ public partial class MainWindow : Window
             }
         }
         
+        Log("Finished extraction");
         Reset();
     }
 
