@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -224,7 +225,8 @@ public partial class MainWindow : Window
             await foreach (var song in folder.GetItemsAsync())
             {
                 if (song is not IStorageFile) continue;
-                ExtractSong(CleanPath(song.Path.ToString()));
+                var progress = new Progress<string>(Log);
+                await Task.Run(()=>ExtractSong(CleanPath(song.Path.ToString()), progress));
             }
         }
         
@@ -232,29 +234,29 @@ public partial class MainWindow : Window
         Reset();
     }
 
-    private void ExtractSong(string path)
+    private void ExtractSong(string path, IProgress<string> progress)
     {
         var file = TagLib.File.Create(path);
         var songName = file.Tag.Title;
-        Log($"Extracting \"{songName}\"");
+        progress.Report($"Extracting \"{songName}\"");
 
         if (songName == null)
         {
-            Log("WARNING: Could not determine song title, it will be given a random name instead");
+            progress.Report("WARNING: Could not determine song title, it will be given a random name instead");
             songName = "Unknown_" + Path.GetRandomFileName().Substring(0, 8);
         }
 
         var newPath = CleanPath(_outputFolder!) + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
         if (File.Exists(newPath + Path.GetExtension(path)))
         {
-            Log($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
+            progress.Report($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
             newPath += "_" + Path.GetRandomFileName().Substring(0, 8);
         }
 
         newPath += Path.GetExtension(path);
         
         File.Copy(path, newPath, false);
-        Log($"Extracted \"{songName}\" to {newPath}");
+        progress.Report($"Extracted \"{songName}\" to {newPath}");
     }
 
     private string CleanPath(string path)
@@ -283,6 +285,7 @@ public partial class MainWindow : Window
 
     private void Log(string message)
     {
-        logBox.Text += message + Environment.NewLine;
+        logBox.Text += Environment.NewLine + message;
+        logBox.CaretIndex = int.MaxValue;
     }
 }
