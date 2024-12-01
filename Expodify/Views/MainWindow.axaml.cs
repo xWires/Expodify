@@ -245,11 +245,13 @@ public partial class MainWindow : Window
         }
 
         var newPath = CleanPath(_outputFolder!, "file://") + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
-        if (File.Exists(newPath))
+        if (File.Exists(newPath + Path.GetExtension(path)))
         {
             Log($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
             newPath += "_" + Path.GetRandomFileName().Substring(0, 8);
         }
+
+        newPath += Path.GetExtension(path);
         
         File.Copy(path, newPath, false);
         Log($"Extracted \"{songName}\" to {newPath}");
