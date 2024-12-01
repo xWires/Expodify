@@ -35,14 +35,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-Windows-x64
-        path: bin/Expodify-Win-x64.zip
+        path: bin/win-x64/
     - name: Upload Linux artifact
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-Linux-x64
-        path: bin/Expodify-Linux-x64.zip
+        path: bin/linux-x64
     - name: Upload macOS artifact
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-macOS-arm64
-        path: bin/Expodify-macOS-arm64.zip
+        path: bin/macos-arm64
