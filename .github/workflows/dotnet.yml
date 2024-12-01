@@ -26,3 +26,28 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Publish
+      run: |
+        dotnet publish -o bin/win-x64 -r win-x64
+        dotnet publish -o bin/linux-x64 -r linux-x64
+        dotnet publish -o bin/osx-arm64 -r osx-arm64
+    - name: Compress artifacts
+      run: |
+        zip -r bin/Expodify-Win-x64.zip bin/win-x64
+        zip -r bin/Expodify-Linux-x64.zip bin/linux-x64
+        zip -r bin/Expodify-macOS-arm64.zip bin/osx-arm64
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Windows-x64
+        path: bin/Expodify-Win-x64.zip
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Linux-x64
+        path: bin/Expodify-Linux-x64.zip
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macOS-arm64
+        path: bin/Expodify-macOS-arm64.zip
