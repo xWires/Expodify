@@ -15,15 +15,20 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <StackPanel>
-        <Border Margin="5" CornerRadius="10" Background="LightBlue">
-            <TextBlock Margin="5"
-                       FontSize="24"
+    <DockPanel Margin="5">
+        <Border DockPanel.Dock="Top" Margin="5" CornerRadius="10" Background="LightBlue">
+            <TextBlock FontSize="24"
                        HorizontalAlignment="Center"
                        Text="Expodify">
             </TextBlock>
         </Border>
-        <TextBlock Name="selectedFolder"></TextBlock>
-        <Button HorizontalAlignment="Center" Click="ButtonClicked">Extract</Button>
-    </StackPanel>
+        <Panel DockPanel.Dock="Top">
+            <WrapPanel>
+                <Button Click="OpenIPodFolder" Name="openIPodButton">Open iPod</Button>
+                <Button Click="SelectOutputFolder" Name="selectOutputFolderButton">Select Output Folder</Button>
+            </WrapPanel>
+            <Button HorizontalAlignment="Right" Click="Extract" Name="extractButton">Extract</Button>
+        </Panel>
+        <TextBox DockPanel.Dock="Top" IsReadOnly="True" Focusable="False" TextWrapping="Wrap" Name="logBox"></TextBox>
+    </DockPanel>
 </Window>
