@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -17,9 +18,12 @@ public partial class MainWindow : Window
     private IStorageFolder? _iPodControl;
     private IStorageFolder? _musicFolder;
     
+    public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
+    
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = this;
     }
 
     private async void OpenIPodFolder(object source, RoutedEventArgs args)
@@ -285,7 +289,7 @@ public partial class MainWindow : Window
 
     private void Log(string message)
     {
-        logBox.Text += Environment.NewLine + message;
-        logBox.CaretIndex = int.MaxValue;
+        Logs.Add(message);
+        logBox.ScrollIntoView(message);
     }
 }
