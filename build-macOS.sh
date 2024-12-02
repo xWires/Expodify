@@ -33,7 +33,3 @@ cat > bin/Expodify.app/Contents/Info.plist << EOF
 EOF
 
 cp -r bin/osx-arm64/* bin/Expodify.app/Contents/MacOS
-
-# To sign, use this command, replacing "TangledWires" with the name of your own certificate
-#
-# codesign --deep -fs TangledWires Expodify.app
