@@ -1,9 +1,9 @@
-mkdir bin/Expodify.app
-mkdir bin/Expodify.app/Contents
-mkdir bin/Expodify.app/Contents/MacOS
-mkdir bin/Expodify.app/Contents/Resources
+mkdir bin/app/Expodify.app
+mkdir bin/app/Expodify.app/Contents
+mkdir bin/app/Expodify.app/Contents/MacOS
+mkdir bin/app/Expodify.app/Contents/Resources
 
-cat > bin/Expodify.app/Contents/Info.plist << EOF
+cat > bin/app/Expodify.app/Contents/Info.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -32,7 +32,7 @@ cat > bin/Expodify.app/Contents/Info.plist << EOF
 </plist>
 EOF
 
-cp -r bin/osx-arm64/* bin/Expodify.app/Contents/MacOS
+cp -r bin/osx-arm64/* bin/app/Expodify.app/Contents/MacOS
 
 # To sign, use this command, replacing "TangledWires" with the name of your own certificate
 #
