@@ -31,6 +31,8 @@ jobs:
         dotnet publish -o bin/win-x64 -r win-x64
         dotnet publish -o bin/linux-x64 -r linux-x64
         dotnet publish -o bin/osx-arm64 -r osx-arm64
+    - name: Make macOS .app file
+      run: ./build-macOS.sh
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v4
       with:
@@ -45,4 +47,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-macOS-arm64
-        path: bin/osx-arm64
+        path: bin/app/
