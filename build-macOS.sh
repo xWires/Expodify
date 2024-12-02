@@ -1,3 +1,4 @@
+mkdir bin/app
 mkdir bin/app/Expodify.app
 mkdir bin/app/Expodify.app/Contents
 mkdir bin/app/Expodify.app/Contents/MacOS
