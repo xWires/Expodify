@@ -240,7 +240,18 @@ public partial class MainWindow : Window
 
     private void ExtractSong(string path, IProgress<string> progress)
     {
-        var file = TagLib.File.Create(path);
+        TagLib.File file;
+        try
+        {
+            file = TagLib.File.Create(path);
+        }
+        catch (Exception e)
+        {
+            progress.Report($"ERROR: Failed to open {path}");
+            progress.Report(e.Message);
+            if (e.StackTrace != null) progress.Report(e.StackTrace);
+            return;
+        }
         var songName = file.Tag.Title;
         progress.Report($"Extracting \"{songName}\"");
 
