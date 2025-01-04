@@ -20,6 +20,7 @@
         <Border DockPanel.Dock="Top" Margin="5" CornerRadius="10" Background="LightBlue">
             <TextBlock FontSize="24"
                        HorizontalAlignment="Center"
+                       Foreground="Black"
                        Text="Expodify">
             </TextBlock>
         </Border>
