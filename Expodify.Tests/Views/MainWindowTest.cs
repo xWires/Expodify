@@ -17,13 +17,15 @@ public class MainWindowTest
     {
         _testOutputHelper = testOutputHelper;
     }
-
-    [Fact]
-    public void ExtractMp3()
+    
+    [Theory]
+    [InlineData("TrackTribe - Walk Through the Park.mp3")]
+    [InlineData("TrackTribe - Walk Through the Park.mp4")]
+    public void ExtractFile(string fileName)
     {
         var outputFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(outputFolder);
-        var testFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", "TrackTribe - Walk Through the Park.mp3");
+        var testFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", fileName);
         var songName = TagLib.File.Create(testFilePath).Tag.Title;
         var copiedFilePath = Expodify.Views.MainWindow.CleanPath(outputFolder) + Path.DirectorySeparatorChar + Expodify.Views.MainWindow.ReplaceInvalidCharacters(songName) + Path.GetExtension(testFilePath);
         

@@ -28,6 +28,9 @@
     <None Update="TestFiles\TrackTribe - Walk Through the Park.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\TrackTribe - Walk Through the Park.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
 </Project>
