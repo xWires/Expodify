@@ -235,6 +235,10 @@ public partial class MainWindow : Window
         }
         
         Log("Finished extraction");
+        Log("Saving log");
+        var logPath = Path.Combine(_outputFolder, "Expodify.log");
+        await Task.Run(()=>File.AppendAllLinesAsync(logPath, Logs));
+        Log($"Saved log to {logPath}");
         Reset();
     }
 
