@@ -14,7 +14,7 @@ public partial class MainWindow : Window
 {
     private IStorageFolder? _iPodFolder;
     private IStorageFolder? _baseOutputFolder;
-    private string? _outputFolder;
+    internal static string? _outputFolder;
     private IStorageFolder? _iPodControl;
     private IStorageFolder? _musicFolder;
     
@@ -95,7 +95,7 @@ public partial class MainWindow : Window
         Log($"Set output folder to {CleanPath(_baseOutputFolder.Path.ToString())}");
     }
 
-    private async void Extract(object source, RoutedEventArgs args)
+    internal async void Extract(object source, RoutedEventArgs args)
     {
         if (_iPodFolder == null)
         {
@@ -242,7 +242,7 @@ public partial class MainWindow : Window
         Reset();
     }
 
-    private void ExtractSong(string path, IProgress<string> progress)
+    internal static void ExtractSong(string path, IProgress<string> progress)
     {
         TagLib.File file;
         try
@@ -278,13 +278,13 @@ public partial class MainWindow : Window
         progress.Report($"Extracted \"{songName}\" to {newPath}");
     }
 
-    private string CleanPath(string path)
+    internal static string CleanPath(string path)
     {
         var prefix = Environment.OSVersion.Platform == PlatformID.Win32NT ? "file:///" : "file://";
         return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
     }
 
-    private string ReplaceInvalidCharacters(string path)
+    internal static string ReplaceInvalidCharacters(string path)
     {
         return string.Join("_", path.Split(Path.GetInvalidFileNameChars()));
     }
