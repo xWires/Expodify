@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using Expodify.ViewModels;
 using Expodify.Views;
 using JetBrains.Annotations;
 using Xunit;
@@ -27,10 +28,10 @@ public class MainWindowTest
         Directory.CreateDirectory(outputFolder);
         var testFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", fileName);
         var songName = TagLib.File.Create(testFilePath).Tag.Title;
-        var copiedFilePath = Expodify.Views.MainWindow.CleanPath(outputFolder) + Path.DirectorySeparatorChar + Expodify.Views.MainWindow.ReplaceInvalidCharacters(songName) + Path.GetExtension(testFilePath);
+        var copiedFilePath = MainWindowViewModel.CleanPath(outputFolder) + Path.DirectorySeparatorChar + MainWindowViewModel.ReplaceInvalidCharacters(songName) + Path.GetExtension(testFilePath);
         
-        Expodify.Views.MainWindow._outputFolder = outputFolder;
-        Expodify.Views.MainWindow.ExtractSong(testFilePath, new Progress<string>());
+        MainWindowViewModel.OutputFolder = outputFolder;
+        MainWindowViewModel.ExtractSong(testFilePath, new Progress<string>());
 
         var expectedHash = ComputeFileHash(testFilePath);
         var actualHash = ComputeFileHash(copiedFilePath);
@@ -39,8 +40,8 @@ public class MainWindowTest
         _testOutputHelper.WriteLine($"Actual Hash: {actualHash}");
         Assert.Equal(expectedHash, actualHash);
     }
-    
-    public static string ComputeFileHash(string filePath)
+
+    private static string ComputeFileHash(string filePath)
     {
         using (var md5 = MD5.Create())
         using (var stream = File.OpenRead(filePath))
