@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:Expodify.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Expodify.Views.MainWindow"
-        x:DataType="views:MainWindow"
+        x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Expodify">
 
@@ -26,10 +26,10 @@
         </Border>
         <Panel DockPanel.Dock="Top">
             <WrapPanel>
-                <Button Click="OpenIPodFolder" Name="openIPodButton">Open iPod</Button>
-                <Button Click="SelectOutputFolder" Name="selectOutputFolderButton">Select Output Folder</Button>
+                <Button Command="{Binding OpenIPodFolderCommand}" Name="openIPodButton">Open iPod</Button>
+                <Button Command="{Binding SelectOutputFolderCommand}" Name="selectOutputFolderButton">Select Output Folder</Button>
             </WrapPanel>
-            <Button HorizontalAlignment="Right" Click="Extract" Name="extractButton">Extract</Button>
+            <Button HorizontalAlignment="Right" Command="{Binding ExtractCommand}" Name="extractButton">Extract</Button>
         </Panel>
         <!-- <TextBox DockPanel.Dock="Top" IsReadOnly="True" Focusable="False" TextWrapping="Wrap"  VerticalContentAlignment="Bottom"></TextBox> -->
         <ListBox DockPanel.Dock="Top" Name="logBox" ItemsSource="{Binding Logs}"></ListBox>
