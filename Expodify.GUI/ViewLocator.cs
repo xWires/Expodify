@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Expodify.ViewModels;
+using Expodify.GUI.ViewModels;
 
-namespace Expodify;
+namespace Expodify.GUI;
 
 public class ViewLocator : IDataTemplate
 {
