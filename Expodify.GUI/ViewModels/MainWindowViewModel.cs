@@ -15,9 +15,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private IStorageFolder? _iPodFolder;
     private IStorageFolder? _baseOutputFolder;
-    internal static string? OutputFolder;
-    private IStorageFolder? _iPodControl;
-    private IStorageFolder? _musicFolder;
+    private static string? _outputFolder;
 
     [ObservableProperty] private bool _isOpenIPodButtonEnabled;
     [ObservableProperty] private bool _isSelectOutputFolderButtonEnabled;
@@ -98,9 +96,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
         try
         {
-            OutputFolder = _baseOutputFolder.Path.AbsolutePath + "Expodify-" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            Directory.CreateDirectory(OutputFolder);
-            Log($"Created output folder at {OutputFolder}");
+            _outputFolder = _baseOutputFolder.Path.AbsolutePath + "Expodify-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            Directory.CreateDirectory(_outputFolder);
+            Log($"Created output folder at {_outputFolder}");
         }
         catch (PathTooLongException)
         {
@@ -194,7 +192,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IProgress<string> progress = new Progress<string>(Log);
         var extractor = new Extractor(progress);
 
-        extractor.OutputFolder = new DirectoryInfo(OutputFolder);
+        extractor.OutputFolder = new DirectoryInfo(_outputFolder);
         extractor.SourceFolder = new DirectoryInfo(_iPodFolder.Path.AbsolutePath);
         await Task.Run(()=>extractor.Extract()).ContinueWith(t=>
         {
@@ -207,7 +205,7 @@ public partial class MainWindowViewModel : ViewModelBase
         
         Log("Finished extraction");
         Log("Saving log");
-        var logPath = Path.Combine(OutputFolder, "Expodify.log");
+        var logPath = Path.Combine(_outputFolder, "Expodify.log");
         await Task.Run(()=>File.AppendAllLinesAsync(logPath, Logs));
         Log($"Saved log to {logPath}");
         Reset();
@@ -217,9 +215,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _iPodFolder = null;
         _baseOutputFolder = null;
-        OutputFolder = null;
-        _iPodControl = null;
-        _musicFolder = null;
+        _outputFolder = null;
         
         IsOpenIPodButtonEnabled = true;
         IsSelectOutputFolderButtonEnabled = true;

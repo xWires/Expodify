@@ -17,20 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expodify.GUI\Expodify.GUI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="TestFiles\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestFiles\TrackTribe - Walk Through the Park.mp3">
+    <None Update="TestFiles\iPod_Control\Music\F00\TrackTribe - Walk Through the Park.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\TrackTribe - Walk Through the Park.mp4">
+    <None Update="TestFiles\iPod_Control\Music\F00\TrackTribe - Walk Through the Park.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Expodify\Expodify.csproj" />
   </ItemGroup>
   
 </Project>
