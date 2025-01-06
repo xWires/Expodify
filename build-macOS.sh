@@ -12,7 +12,7 @@ cat > bin/gui/app/Expodify.app/Contents/Info.plist << EOF
   <key>CFBundleGetInfoString</key>
   <string>Expodify</string>
   <key>CFBundleExecutable</key>
-  <string>Expodify</string>
+  <string>Expodify.GUI</string>
   <key>CFBundleIdentifier</key>
   <string>xyz.tangledwires.Expodify</string>
   <key>CFBundleName</key>
