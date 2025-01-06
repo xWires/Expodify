@@ -33,30 +33,30 @@ jobs:
     - name: Upload Windows GUI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-Windows-x64
+        name: Expodify-GUI-Windows-x64
         path: bin/gui/win-x64/
     - name: Upload Linux GUI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-Linux-x64
+        name: Expodify-GUI-Linux-x64
         path: bin/gui/linux-x64
     - name: Upload macOS GUI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-macOS-arm64
+        name: Expodify-GUI-macOS-arm64
         path: bin/gui/app/
     - name: Upload Windows CLI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-Windows-x64
+        name: Expodify-CLI-Windows-x64
         path: bin/cli/win-x64/
     - name: Upload Linux CLI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-Linux-x64
+        name: Expodify-CLI-Linux-x64
         path: bin/cli/linux-x64
     - name: Upload macOS CLI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Expodify-macOS-arm64
+        name: Expodify-CLI-macOS-arm64
         path: bin/cli/osx-arm64/
