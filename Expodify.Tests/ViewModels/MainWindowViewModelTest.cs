@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using Expodify.ViewModels;
+using Expodify.GUI.ViewModels;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

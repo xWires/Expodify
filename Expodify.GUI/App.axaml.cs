@@ -4,10 +4,10 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-using Expodify.ViewModels;
-using Expodify.Views;
+using Expodify.GUI.Views;
+using Expodify.GUI.ViewModels;
 
-namespace Expodify;
+namespace Expodify.GUI;
 
 public partial class App : Application
 {

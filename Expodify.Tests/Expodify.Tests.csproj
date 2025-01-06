@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expodify\Expodify.csproj" />
+    <ProjectReference Include="..\Expodify.GUI\Expodify.GUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

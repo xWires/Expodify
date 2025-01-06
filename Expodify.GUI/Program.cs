@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace Expodify;
+namespace Expodify.GUI;
 
 sealed class Program
 {

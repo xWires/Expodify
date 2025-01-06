@@ -1,8 +1,8 @@
 using System.Collections.Specialized;
 using Avalonia.Controls;
-using Expodify.ViewModels;
+using Expodify.GUI.ViewModels;
 
-namespace Expodify.Views;
+namespace Expodify.GUI.Views;
 
 public partial class MainWindow : Window
 {

@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 
-namespace Expodify.ViewModels;
+namespace Expodify.GUI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
