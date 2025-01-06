@@ -46,8 +46,8 @@ class Program
             {
                 if (t.IsFaulted)
                 {
-                    progress.Report(t.Exception.Message);
-                    if (t.Exception.StackTrace != null) progress.Report(t.Exception.StackTrace);
+                    Console.WriteLine(t.Exception.Message);
+                    if (t.Exception.StackTrace != null) Console.WriteLine(t.Exception.StackTrace);
                     returnCode = 1;
                 }
             });
