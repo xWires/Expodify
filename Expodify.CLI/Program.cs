@@ -47,7 +47,11 @@ class Program
                 if (t.IsFaulted)
                 {
                     Console.WriteLine(t.Exception.Message);
-                    if (t.Exception.StackTrace != null) Console.WriteLine(t.Exception.StackTrace);
+                    foreach (var e in t.Exception.InnerExceptions)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine(e.StackTrace);
+                    }
                     returnCode = 1;
                 }
             });

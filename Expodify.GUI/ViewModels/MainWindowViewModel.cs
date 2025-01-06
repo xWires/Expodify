@@ -199,7 +199,11 @@ public partial class MainWindowViewModel : ViewModelBase
             if (t.IsFaulted)
             {
                 progress.Report(t.Exception.Message);
-                if (t.Exception.StackTrace != null) progress.Report(t.Exception.StackTrace);
+                foreach (var e in t.Exception.InnerExceptions)
+                {
+                    progress.Report(e.Message);
+                    if (e.StackTrace != null) progress.Report(e.StackTrace);
+                }
             }
         });
         

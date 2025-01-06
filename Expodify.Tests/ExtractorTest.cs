@@ -34,7 +34,11 @@ public class ExtractorTest
             if (t.IsFaulted)
             {
                 _testOutputHelper.WriteLine(t.Exception.Message);
-                if (t.Exception.StackTrace != null) _testOutputHelper.WriteLine(t.Exception.StackTrace);
+                foreach (var e in t.Exception.InnerExceptions)
+                {
+                    _testOutputHelper.WriteLine(e.Message);
+                    _testOutputHelper.WriteLine(e.StackTrace);
+                }
             }
         });
         
