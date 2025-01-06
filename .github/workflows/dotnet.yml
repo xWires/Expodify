@@ -30,18 +30,33 @@ jobs:
       run: ./build.sh
     - name: Make macOS .app file
       run: ./build-macOS.sh
-    - name: Upload Windows artifact
+    - name: Upload Windows GUI artifact
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-Windows-x64
-        path: bin/win-x64/
-    - name: Upload Linux artifact
+        path: bin/gui/win-x64/
+    - name: Upload Linux GUI artifact
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-Linux-x64
-        path: bin/linux-x64
-    - name: Upload macOS artifact
+        path: bin/gui/linux-x64
+    - name: Upload macOS GUI artifact
       uses: actions/upload-artifact@v4
       with:
         name: Expodify-macOS-arm64
-        path: bin/app/
+        path: bin/gui/app/
+    - name: Upload Windows CLI artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Expodify-Windows-x64
+        path: bin/cli/win-x64/
+    - name: Upload Linux CLI artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Expodify-Linux-x64
+        path: bin/cli/linux-x64
+    - name: Upload macOS CLI artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Expodify-macOS-arm64
+        path: bin/cli/osx-arm64/
