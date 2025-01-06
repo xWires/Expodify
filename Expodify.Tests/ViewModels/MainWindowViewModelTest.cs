@@ -2,19 +2,18 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using Expodify.ViewModels;
-using Expodify.Views;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Expodify.Tests.Views;
+namespace Expodify.Tests.ViewModels;
 
-[TestSubject(typeof(MainWindow))]
-public class MainWindowTest
+[TestSubject(typeof(MainWindowViewModel))]
+public class MainWindowViewModelTest
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public MainWindowTest(ITestOutputHelper testOutputHelper)
+    public MainWindowViewModelTest(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
