@@ -6,6 +6,8 @@ class Program
 {
     static async Task<int> Main(string[] args)
     {
+        int returnCode = 0;
+        
         var rootCommand = new RootCommand("A tool to extract music from iPods.");
 
         var sourceArgument = new Argument<DirectoryInfo>(
@@ -20,6 +22,20 @@ class Program
         
         rootCommand.SetHandler(async (source, destination) =>
         {
+            if (!source.Exists)
+            {
+                Console.WriteLine("Source directory does not exist.");
+                returnCode = 1;
+                return;
+            }
+
+            if (!destination.Exists)
+            {
+                Console.WriteLine("Destination directory does not exist.");
+                returnCode = 1;
+                return;
+            }
+            
             IProgress<string> progress = new Progress<string>(Console.WriteLine);
             var extractor = new Extractor(progress);
 
@@ -32,10 +48,13 @@ class Program
                 {
                     progress.Report(t.Exception.Message);
                     if (t.Exception.StackTrace != null) progress.Report(t.Exception.StackTrace);
+                    returnCode = 1;
                 }
             });
         }, sourceArgument, destinationArgument);
         
-        return await rootCommand.InvokeAsync(args);
+        await rootCommand.InvokeAsync(args);
+        
+        return returnCode;
     }
 }
