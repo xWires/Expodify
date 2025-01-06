@@ -193,7 +193,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var extractor = new Extractor(progress);
 
         extractor.OutputFolder = new DirectoryInfo(_outputFolder);
-        extractor.SourceFolder = new DirectoryInfo(_iPodFolder.Path.AbsolutePath);
+        extractor.SourceFolder = new DirectoryInfo(CleanPath(_iPodFolder.Path.ToString()));
         await Task.Run(()=>extractor.Extract()).ContinueWith(t=>
         {
             if (t.IsFaulted)
