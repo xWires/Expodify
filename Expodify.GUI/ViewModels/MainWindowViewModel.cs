@@ -45,46 +45,8 @@ public partial class MainWindowViewModel : ViewModelBase
         if (folder.Count < 1) return;
         
         _iPodFolder = folder[0];
-
-        var contents = _iPodFolder.GetItemsAsync();
-        await foreach (var c in contents)
-        {
-            if (c is not IStorageFolder storageFolder) continue;
-            if (storageFolder.Name == "iPod_Control") { _iPodControl = storageFolder; break; }
-        }
-
-        if (_iPodControl == null)
-        {
-            Log("Could not find iPod_Control folder");
-            await MessageBoxManager.GetMessageBoxStandard(
-                    "Invalid Folder",
-                    "The folder you selected does not contain an \"iPod_Control\" folder.",
-                    ButtonEnum.Ok,
-                    Icon.Error)
-                .ShowAsync();
-            return;
-        }
-        Log($"Found iPod_Control at {CleanPath(_iPodControl.Path.ToString())}");
         
-        var controlContents = _iPodControl.GetItemsAsync();
-        await foreach (var c in controlContents)
-        {
-            if (c is not IStorageFolder storageFolder) continue;
-            if (storageFolder.Name == "Music") { _musicFolder = storageFolder; break; }
-        }
-        
-        if (_musicFolder == null)
-        {
-            Log("Could not find Music folder");
-            await MessageBoxManager.GetMessageBoxStandard(
-                    "No music found",
-                    "The folder you selected does not contain any music.",
-                    ButtonEnum.Ok,
-                    Icon.Error)
-                .ShowAsync();
-            return;
-        }
-        Log($"Found Music at {CleanPath(_musicFolder.Path.ToString())}");
+        Log($"Set iPod folder to {CleanPath(_iPodFolder.Path.ToString())}");
     }
 
     [RelayCommand]
@@ -229,19 +191,19 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        // Loop through each of the "F" folders (e.g. F00, F01, F02, etc.)
-        await foreach (var item in _musicFolder!.GetItemsAsync())
-        {
-            if (item is not IStorageFolder folder) continue;
-            Log($"Looking for music at {folder.Path.AbsolutePath}");
+        IProgress<string> progress = new Progress<string>(Log);
+        var extractor = new Extractor(progress);
 
-            await foreach (var song in folder.GetItemsAsync())
+        extractor.OutputFolder = new DirectoryInfo(OutputFolder);
+        extractor.SourceFolder = new DirectoryInfo(_iPodFolder.Path.AbsolutePath);
+        await Task.Run(()=>extractor.Extract()).ContinueWith(t=>
+        {
+            if (t.IsFaulted)
             {
-                if (song is not IStorageFile) continue;
-                var progress = new Progress<string>(Log);
-                await Task.Run(()=>ExtractSong(CleanPath(song.Path.ToString()), progress));
+                progress.Report(t.Exception.Message);
+                if (t.Exception.StackTrace != null) progress.Report(t.Exception.StackTrace);
             }
-        }
+        });
         
         Log("Finished extraction");
         Log("Saving log");
@@ -249,53 +211,6 @@ public partial class MainWindowViewModel : ViewModelBase
         await Task.Run(()=>File.AppendAllLinesAsync(logPath, Logs));
         Log($"Saved log to {logPath}");
         Reset();
-    }
-
-    internal static void ExtractSong(string path, IProgress<string> progress)
-    {
-        TagLib.File file;
-        try
-        {
-            file = TagLib.File.Create(path);
-        }
-        catch (Exception e)
-        {
-            progress.Report($"ERROR: Failed to open {path}");
-            progress.Report(e.Message);
-            if (e.StackTrace != null) progress.Report(e.StackTrace);
-            return;
-        }
-        var songName = file.Tag.Title;
-        progress.Report($"Extracting \"{songName}\"");
-
-        if (songName == null)
-        {
-            progress.Report("WARNING: Could not determine song title, it will be given a random name instead");
-            songName = "Unknown_" + Path.GetRandomFileName().Substring(0, 8);
-        }
-
-        var newPath = CleanPath(OutputFolder!) + Path.DirectorySeparatorChar + ReplaceInvalidCharacters(songName);
-        if (File.Exists(newPath + Path.GetExtension(path)))
-        {
-            progress.Report($"WARNING: {newPath} already exists, it will have random letters added to the end of the file name.");
-            newPath += "_" + Path.GetRandomFileName().Substring(0, 8);
-        }
-
-        newPath += Path.GetExtension(path);
-        
-        File.Copy(path, newPath, false);
-        progress.Report($"Extracted \"{songName}\" to {newPath}");
-    }
-
-    internal static string CleanPath(string path)
-    {
-        var prefix = Environment.OSVersion.Platform == PlatformID.Win32NT ? "file:///" : "file://";
-        return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
-    }
-
-    internal static string ReplaceInvalidCharacters(string path)
-    {
-        return string.Join("_", path.Split(Path.GetInvalidFileNameChars()));
     }
 
     private void Reset()
@@ -309,6 +224,12 @@ public partial class MainWindowViewModel : ViewModelBase
         IsOpenIPodButtonEnabled = true;
         IsSelectOutputFolderButtonEnabled = true;
         IsExtractButtonEnabled = true;
+    }
+    
+    private static string CleanPath(string path)
+    {
+        var prefix = Environment.OSVersion.Platform == PlatformID.Win32NT ? "file:///" : "file://";
+        return path.StartsWith(prefix) ? path.Substring(prefix.Length) : path;
     }
 
     private void Log(string message)
