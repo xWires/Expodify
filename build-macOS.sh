@@ -1,8 +1,5 @@
-mkdir bin/gui/app
-mkdir bin/gui/app/Expodify.app
-mkdir bin/gui/app/Expodify.app/Contents
-mkdir bin/gui/app/Expodify.app/Contents/MacOS
-mkdir bin/gui/app/Expodify.app/Contents/Resources
+mkdir -p bin/gui/app/Expodify.app/Contents/MacOS
+mkdir -p bin/gui/app/Expodify.app/Contents/Resources
 
 cat > bin/gui/app/Expodify.app/Contents/Info.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
