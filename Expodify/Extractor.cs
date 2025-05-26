@@ -22,14 +22,14 @@ public class Extractor
       
       foreach (var folder in SourceFolder.EnumerateDirectories())
       {
-         if (folder.Name == "iPod_Control")
+         if (folder.Name is "iPod_Control" or "iTunes_Control")
          {
             _iPodControl = folder;
-            Log($"Found iPod_Control at {folder.FullName}");
+            Log($"Found {folder.Name} at {folder.FullName}");
             break;
          }
       }
-      if (_iPodControl == null) throw new DirectoryNotFoundException("SourceFolder does not contain iPod_Control");
+      if (_iPodControl == null) throw new DirectoryNotFoundException("SourceFolder does not contain iPod_Control/iTunes_Control");
 
       foreach (var folder in _iPodControl.EnumerateDirectories())
       {
